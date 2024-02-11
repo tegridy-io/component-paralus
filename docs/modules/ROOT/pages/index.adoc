@@ -1,0 +1,5 @@
+= Paralus
+
+paralus is a Commodore component to manage Paralus.
+
+See the xref:references/parameters.adoc[parameters] reference for further details.
