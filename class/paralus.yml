@@ -1,5 +1,21 @@
 parameters:
   kapitan:
+    dependencies:
+      - type: helm
+        source: ${paralus:charts:postgresql:source}
+        chart_name: postgresql
+        version: ${paralus:charts:postgresql:version}
+        output_path: ${_base_directory}/helmcharts/postgresql/${paralus:charts:postgresql:version}/
+      # - type: helm
+      #   source: ${paralus:charts:kratos:source}
+      #   chart_name: kratos
+      #   version: ${paralus:charts:kratos:version}
+      #   output_path: ${_base_directory}/helmcharts/kratos/${paralus:charts:kratos:version}/
+      - type: helm
+        source: ${paralus:charts:paralus:source}
+        chart_name: ztka
+        version: ${paralus:charts:paralus:version}
+        output_path: ${_base_directory}/helmcharts/paralus/${paralus:charts:paralus:version}/
     compile:
       - input_paths:
           - ${_base_directory}/component/app.jsonnet
@@ -9,3 +25,29 @@ parameters:
           - ${_base_directory}/component/main.jsonnet
         input_type: jsonnet
         output_path: paralus/
+      # Helm
+      # - input_paths:
+      #     - ${_base_directory}/helmcharts/postgresql/${paralus:charts:postgresql:version}
+      #   input_type: helm
+      #   output_path: ${_instance}//10_helmchart/
+      #   helm_values: ${paralus:helmValues:postgresql}
+      #   helm_params:
+      #     name: postgresql
+      #     namespace: ${paralus:namespace:name}
+      # - input_paths:
+      #     - ${_base_directory}/helmcharts/kratos/${paralus:charts:kratos:version}
+      #   input_type: helm
+      #   output_path: ${_instance}//10_helmchart/
+      #   helm_values: ${paralus:helmValues:kratos}
+      #   helm_params:
+      #     name: kratos
+      #     namespace: ${paralus:namespace:name}
+      - input_paths:
+          - ${_base_directory}/helmcharts/paralus/${paralus:charts:paralus:version}
+        input_type: helm
+        output_path: ${_instance}//10_helmchart/
+        helm_values: ${paralus:helmValues:paralus}
+        helm_params:
+          name: paralus
+          namespace: ${paralus:namespace:name}
+          dependency_update: false

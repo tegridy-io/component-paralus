@@ -1,0 +1,16 @@
+apiVersion: v1
+data:
+  AUDIT_LOG_FILE: /audit-logs/audit.log
+  DEV: 'false'
+  KRATOS_ADDR: http://paralus-kratos-admin
+  KRATOS_PUB_ADDR: http://paralus-kratos-public
+  SENTRY_ADDR: paralus:10000
+kind: ConfigMap
+metadata:
+  labels:
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: prompt
+    app.kubernetes.io/version: v0.2.6
+    helm.sh/chart: ztka-0.2.7
+  name: prompt-config

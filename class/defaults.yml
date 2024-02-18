@@ -1,4 +1,93 @@
 parameters:
   paralus:
     =_metadata: {}
-    namespace: syn-paralus
+
+    namespace:
+      annotations: {}
+      labels: {}
+      name: syn-paralus
+
+    charts:
+      paralus:
+        source: https://paralus.github.io/helm-charts
+        version: 0.2.7
+      kratos:
+        source: https://k8s.ory.sh/helm/charts
+        version: 0.39.1
+      postgresql:
+        source: https://charts.bitnami.com/bitnami
+        version: 14.0.1
+
+    database:
+      storage:
+        storageClass: ''
+
+    secrets:
+      postgresql: ?{vaultkv:${cluster:tenant}/${cluster:name}/paralus/postgresql}
+
+    helmValues:
+      kratos: {}
+
+      postgresql:
+        architecture: standalone
+        auth:
+          enablePostgresUser: false
+          username: paralus
+          database: paralus
+          existingSecret: paralus-db
+          secretKeys:
+            adminPasswordKey: DB_PASSWORD
+            userPasswordKey: DB_PASSWORD
+            # replicationPasswordKey: replication-password
+        commonLabels:
+          app.kubernetes.io/managed-by: commodore
+        primary:
+          # resources: ${paralus:resources:postgresql}
+          podAntiAffinityPreset: soft
+          podAnnotations:
+            k8up.io/backupcommand: sh -c 'PGDATABASE="$POSTGRES_DATABASE" PGUSER="$POSTGRES_USER" PGPASSWORD="$POSTGRES_PASSWORD" pg_dump --clean'
+            k8up.io/file-extension: .sql
+          persistence:
+            enabled: true
+            accessMode: ReadWriteOnce
+            storageClass: ${paralus:database:storage:storageClass}
+            size: 5Gi
+            annotations:
+              k8up.io/backup: 'false'
+          networkPolicy:
+            enabled: false
+        readReplicas:
+          persistence:
+            annotations:
+              k8up.io/backup: 'false'
+          networkPolicy:
+            enabled: false
+        tls:
+          enabled: false
+        serviceAccount:
+          create: false
+
+      paralus:
+        analytics:
+          enable: false
+        fqdn:
+          domain: paralus.local
+        ingress:
+          enabled: true
+        deploy:
+          kratos:
+            enable: true
+          elasticsearch:
+            enable: false
+          postgresql:
+            enable: true
+            # address: postgresql:5432
+            # username: ${paralus:helmValues:postgresql:auth:username}
+            # password: ${paralus:secrets:postgresql}
+            # database: paralus
+          filebeat:
+            enable: false
+          fluentbit:
+            enable: false
+          contour:
+            enable: false

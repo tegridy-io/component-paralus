@@ -3,7 +3,7 @@ local inv = kap.inventory();
 local params = inv.parameters.paralus;
 local argocd = import 'lib/argocd.libjsonnet';
 
-local app = argocd.App('paralus', params.namespace);
+local app = argocd.App('paralus', params.namespace.name);
 
 {
   paralus: app,

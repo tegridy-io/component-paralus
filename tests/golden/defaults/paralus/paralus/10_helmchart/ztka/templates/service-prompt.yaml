@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: prompt
+    app.kubernetes.io/version: v0.2.6
+    helm.sh/chart: ztka-0.2.7
+  name: prompt
+spec:
+  ports:
+    - name: http
+      port: 7009
+      protocol: TCP
+      targetPort: http
+  selector:
+    app.kubernetes.io/instance: paralus
+    app.kubernetes.io/name: prompt
+  type: ClusterIP
