@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations: null
+  labels:
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/version: v0.2.6
+    helm.sh/chart: ztka-0.2.7
+  name: ztka
+spec:
+  rules:
+    - host: '*.core-connector.paralus.local'
+      http:
+        paths:
+          - backend:
+              service:
+                name: relay-server
+                port:
+                  number: 443
+            path: /
+            pathType: Prefix
+    - host: '*.user.paralus.local'
+      http:
+        paths:
+          - backend:
+              service:
+                name: relay-server
+                port:
+                  number: 443
+            path: /
+            pathType: Prefix
